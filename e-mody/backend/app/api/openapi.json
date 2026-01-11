@@ -1,0 +1,633 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API e-mody",
+    "version": "1.0.0",
+    "description": "Documentation OpenAPI pour les endpoints du projet e-mody (users, personnels, axes, arrets, assignments, trajets, imports, reports)."
+  },
+  "servers": [
+    {
+      "url": "/Projet-Stage/e-mody/backend/app/api",
+      "description": "Serveur local (chemin de base utilisé par ton router)"
+    }
+  ],
+  "paths": {
+    "/personnels": {
+      "get": {
+        "summary": "Lister les personnels",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 1 },
+            "required": false,
+            "description": "Nombre max d'éléments"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 0 },
+            "required": false,
+            "description": "Décalage pour pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des personnels",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Personnel" }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total": { "type": "integer" },
+                        "limit": { "type": ["integer","null"] },
+                        "offset": { "type": ["integer","null"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer un nouveau personnel",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PersonnelCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Créé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type":"object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "id": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Requête invalide" }
+        }
+      }
+    },
+    "/personnels/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "integer" }
+        }
+      ],
+      "get": {
+        "summary": "Récupérer un personnel par id",
+        "responses": {
+          "200": {
+            "description": "Personnel trouvé",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PersonnelResponse" }
+              }
+            }
+          },
+          "404": { "description": "Non trouvé" }
+        }
+      },
+      "put": {
+        "summary": "Mettre à jour un personnel (remplacement complet)",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PersonnelUpdate" } } }
+        },
+        "responses": {
+          "200": { "description": "Mise à jour effectuée" },
+          "400": { "description": "Erreur de validation" }
+        }
+      },
+      "patch": {
+        "summary": "Mettre à jour un personnel (partiel)",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PersonnelUpdate" } } }
+        },
+        "responses": { "200": { "description": "Mise à jour partielle effectuée" } }
+      },
+      "delete": {
+        "summary": "Supprimer un personnel",
+        "responses": {
+          "200": {
+            "description": "Suppression effectuée",
+            "content": {
+              "application/json": {
+                "schema": { "type":"object", "properties": { "success": { "type": "boolean" }, "deleted": { "type": "integer" } } }
+              }
+            }
+          },
+          "400": { "description": "Erreur" }
+        }
+      }
+    },
+
+    "/users": {
+      "get": {
+        "summary": "Lister les utilisateurs",
+        "description": "Retourne la liste des utilisateurs (champs sensibles exclus).",
+        "responses": {
+          "200": {
+            "description": "Liste des utilisateurs",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/UserPublic" } }
+              }
+            }
+          }
+        },
+        "security": [ { "cookieAuth": [] } ]
+      },
+      "post": {
+        "summary": "Créer un utilisateur",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserCreate" } } }
+        },
+        "responses": {
+          "201": { "description": "Utilisateur créé", "content": { "application/json": { "schema": { "type": "object", "properties": { "id": { "type": "integer" } } } } } },
+          "400": { "description": "Requête invalide" }
+        }
+      }
+    },
+
+    "/users/{id}": {
+      "parameters": [
+        { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+      ],
+      "get": {
+        "summary": "Récupérer un utilisateur",
+        "responses": {
+          "200": { "description": "Utilisateur", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } } } },
+          "401": { "description": "Non authentifié" },
+          "404": { "description": "Introuvable" }
+        },
+        "security": [ { "cookieAuth": [] } ]
+      },
+      "put": {
+        "summary": "Remplacer un utilisateur",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserUpdate" } } } },
+        "responses": { "200": { "description": "Mis à jour" }, "400": { "description": "Erreur" } },
+        "security": [ { "cookieAuth": [] } ]
+      },
+      "patch": {
+        "summary": "Mettre à jour partiellement un utilisateur",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserUpdate" } } } },
+        "responses": { "200": { "description": "Mis à jour partiel" } },
+        "security": [ { "cookieAuth": [] } ]
+      },
+      "delete": {
+        "summary": "Supprimer un utilisateur",
+        "responses": { "200": { "description": "Supprimé" } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+
+    "/users/register": {
+      "post": {
+        "summary": "Inscrire un admin / superadmin",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserRegister" } } } },
+        "responses": {
+          "201": { "description": "Inscription OK", "content": { "application/json": { "schema": { "type": "object" } } } },
+          "409": { "description": "Email déjà utilisé" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
+
+    "/users/login": {
+      "post": {
+        "summary": "Authentifier (login)",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } } } },
+        "responses": {
+          "200": { "description": "Connexion réussie", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } } },
+          "401": { "description": "Credentials invalides" }
+        }
+      }
+    },
+
+    "/users/logout": {
+      "post": {
+        "summary": "Déconnexion",
+        "responses": { "200": { "description": "Déconnecté" } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+
+    "/users/me": {
+      "get": {
+        "summary": "Récupérer l'utilisateur courant",
+        "responses": {
+          "200": { "description": "Utilisateur courant", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } } } },
+          "401": { "description": "Non authentifié" }
+        },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+
+    "/import/personnels": {
+      "post": {
+        "summary": "Importer personnels via CSV",
+        "requestBody": { "required": true, "content": { "multipart/form-data": { "schema": { "type": "object", "properties": { "file": { "type": "string", "format": "binary" } } } } } },
+        "responses": { "200": { "description": "Import terminé", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ImportResult" } } } } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+    "/import/axes": {
+      "post": {
+        "summary": "Importer axes via CSV",
+        "requestBody": { "required": true, "content": { "multipart/form-data": { "schema": { "type": "object", "properties": { "file": { "type": "string", "format": "binary" } } } } } },
+        "responses": { "200": { "description": "Import terminé", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ImportResult" } } } } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+    "/import/arrets": {
+      "post": {
+        "summary": "Importer arrets via CSV",
+        "requestBody": { "required": true, "content": { "multipart/form-data": { "schema": { "type": "object", "properties": { "file": { "type": "string", "format": "binary" } } } } } },
+        "responses": { "200": { "description": "Import terminé", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ImportResult" } } } } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+    "/import/cars": {
+      "post": {
+        "summary": "Importer cars via CSV",
+        "requestBody": { "required": true, "content": { "multipart/form-data": { "schema": { "type": "object", "properties": { "file": { "type": "string", "format": "binary" } } } } } },
+        "responses": { "200": { "description": "Import terminé", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ImportResult" } } } } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+    "/import/assignments": {
+      "post": {
+        "summary": "Importer assignments via CSV",
+        "requestBody": { "required": true, "content": { "multipart/form-data": { "schema": { "type": "object", "properties": { "file": { "type": "string", "format": "binary" } } } } } },
+        "responses": { "200": { "description": "Import terminé", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ImportResult" } } } } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+
+    "/axes": {
+      "get": {
+        "summary": "Lister les axes",
+        "responses": { "200": { "description": "Liste", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Axe" } } } } } }
+      },
+      "post": {
+        "summary": "Créer un axe",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AxeCreate" } } } },
+        "responses": { "201": { "description": "Créé" } }
+      }
+    },
+    "/axes/{id}": {
+      "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } } ],
+      "get": { "summary": "Voir un axe", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Axe" } } } } } },
+      "put": { "summary": "Mettre à jour un axe", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AxeCreate" } } } }, "responses": { "200": { "description": "Mis à jour" } } },
+      "patch": { "summary": "Mise à jour partielle", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AxeCreate" } } } }, "responses": { "200": { "description": "OK" } } },
+      "delete": { "summary": "Supprimer un axe", "responses": { "200": { "description": "Supprimé" } } }
+    },
+
+    "/arrets": {
+      "get": { "summary": "Lister arrets", "responses": { "200": { "description": "Liste", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Arret" } } } } } } },
+      "post": { "summary": "Créer un arret", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ArretCreate" } } } }, "responses": { "201": { "description": "Créé" } } }
+    },
+    "/arrets/{id}": {
+      "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } } ],
+      "get": { "summary": "Voir un arret", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Arret" } } } } } },
+      "put": { "summary": "Mettre à jour un arret", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ArretCreate" } } } }, "responses": { "200": { "description": "Mis à jour" } } },
+      "patch": { "summary": "Mise à jour partielle", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ArretCreate" } } } }, "responses": { "200": { "description": "OK" } } },
+      "delete": { "summary": "Supprimer un arret", "responses": { "200": { "description": "Supprimé" } } }
+    },
+
+    "/assignments": {
+      "get": { "summary": "Lister assignments", "responses": { "200": { "description": "Liste", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Assignment" } } } } } } },
+      "post": { "summary": "Créer assignment", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AssignmentCreate" } } } }, "responses": { "201": { "description": "Créé" } } }
+    },
+    "/assignments/{id}": {
+      "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } } ],
+      "get": { "summary": "Voir assignment", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Assignment" } } } } } },
+      "put": { "summary": "Mettre à jour assignment", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AssignmentCreate" } } } }, "responses": { "200": { "description": "Mis à jour" } } },
+      "patch": { "summary": "Mise à jour partielle", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AssignmentCreate" } } } }, "responses": { "200": { "description": "OK" } } },
+      "delete": { "summary": "Supprimer assignment", "responses": { "200": { "description": "Supprimé" } } }
+    },
+
+    "/assign-personnel": {
+      "post": {
+        "summary": "Assigner un personnel à un arrêt (simplifié)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["personnel_id","arret_id"],
+                "properties": {
+                  "personnel_id": { "type": "integer" },
+                  "arret_id": { "type": "integer" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Assignation OK" } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+
+    "/trajets": {
+      "get": { "summary": "Lister trajets", "responses": { "200": { "description": "Liste", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Trajet" } } } } } } },
+      "post": { "summary": "Créer trajet", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TrajetCreate" } } } }, "responses": { "201": { "description": "Créé" } } }
+    },
+    "/trajets/{id}": {
+      "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } } ],
+      "get": { "summary": "Voir trajet", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Trajet" } } } } } }
+    },
+    "/trajets/simulate": {
+      "post": {
+        "summary": "Simuler un trajet sans persister",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TrajetCreate" } } } },
+        "responses": { "200": { "description": "Résultat simulation", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TrajetSimulateResult" } } } } }
+      }
+    },
+    "/trajets/update-route": {
+      "post": {
+        "summary": "Mettre à jour la route d'un trajet (OSRM)",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object" } } } },
+        "responses": { "200": { "description": "Route mise à jour" } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+    "/trajets/update-all-routes": {
+      "post": {
+        "summary": "Mettre à jour toutes les routes (OSRM)",
+        "responses": { "200": { "description": "Mise à jour en arrière-plan (ou synchrone selon implémentation)" } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+    "/trajets/generate-test": {
+      "post": {
+        "summary": "Générer trajets de test",
+        "responses": { "200": { "description": "Tests générés" } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    },
+
+    "/reports/planning": {
+      "get": {
+        "summary": "Rapport planning - personnel planifié",
+        "responses": { "200": { "description": "Rapport planning", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ReportPlanning" } } } } },
+        "security": [ { "cookieAuth": [] } ]
+      }
+    }
+
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "PHPSESSID"
+      },
+      "csrfHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-csrf-token"
+      }
+    },
+    "schemas": {
+      "Personnel": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "telephone": { "type": "string" },
+          "poste": { "type": "string" }
+        }
+      },
+      "PersonnelCreate": {
+        "type": "object",
+        "required": ["nom","prenom"],
+        "properties": {
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "telephone": { "type": "string" },
+          "poste": { "type": "string" }
+        }
+      },
+      "PersonnelUpdate": {
+        "type": "object",
+        "properties": {
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "telephone": { "type": "string" },
+          "poste": { "type": "string" }
+        }
+      },
+      "PersonnelResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/Personnel" }
+        }
+      },
+
+      "UserPublic": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string" },
+          "is_active": { "type": "integer" }
+        }
+      },
+      "UserCreate": {
+        "type": "object",
+        "required": ["email","password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "format": "password" },
+          "role": { "type": "string" },
+          "is_active": { "type": "integer" }
+        }
+      },
+      "UserUpdate": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string" },
+          "is_active": { "type": "integer" }
+        }
+      },
+      "UserRegister": {
+        "type": "object",
+        "required": ["email","password","role"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" },
+          "role": { "type": "string", "enum": ["superadmin","admin"] },
+          "is_active": { "type": "integer" }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email","password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "message": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/UserPublic" },
+          "csrf_token": { "type": "string" }
+        }
+      },
+
+      "ImportResult": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "imported": { "type": "integer" },
+          "errors": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+
+      "Axe": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "code": { "type": "string" },
+          "label": { "type": "string" }
+        }
+      },
+      "AxeCreate": {
+        "type": "object",
+        "required": ["code","label"],
+        "properties": {
+          "code": { "type": "string" },
+          "label": { "type": "string" }
+        }
+      },
+
+      "Arret": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "latitude": { "type": "number", "format": "float" },
+          "longitude": { "type": "number", "format": "float" },
+          "address": { "type": "string" }
+        }
+      },
+      "ArretCreate": {
+        "type": "object",
+        "required": ["name","latitude","longitude"],
+        "properties": {
+          "name": { "type": "string" },
+          "latitude": { "type": "number", "format": "float" },
+          "longitude": { "type": "number", "format": "float" },
+          "address": { "type": "string" }
+        }
+      },
+
+      "Assignment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "personnel_id": { "type": "integer" },
+          "arret_id": { "type": "integer" },
+          "date": { "type": "string", "format": "date" }
+        }
+      },
+      "AssignmentCreate": {
+        "type": "object",
+        "required": ["personnel_id","arret_id"],
+        "properties": {
+          "personnel_id": { "type": "integer" },
+          "arret_id": { "type": "integer" },
+          "date": { "type": "string", "format": "date" }
+        }
+      },
+
+      "Trajet": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "route": { "type": "object" },
+          "distance": { "type": "number" },
+          "duration": { "type": "number" }
+        }
+      },
+      "TrajetCreate": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "waypoints": {
+            "type": "array",
+            "items": { "type": "object", "properties": { "lat": { "type": "number" }, "lng": { "type": "number" } } }
+          }
+        }
+      },
+      "TrajetSimulateResult": {
+        "type": "object",
+        "properties": {
+          "route": { "type": "object" },
+          "distance": { "type": "number" },
+          "duration": { "type": "number" }
+        }
+      },
+
+      "ReportPlanning": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "planned": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "personnel_id": { "type": "integer" },
+                "personnel_name": { "type": "string" },
+                "arret_id": { "type": "integer" },
+                "arret_name": { "type": "string" },
+                "time": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

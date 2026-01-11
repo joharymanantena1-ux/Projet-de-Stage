@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Enterprise Dashboard Design System */
+
+@layer base {
+  :root {
+    /* Core Background & Foreground */
+    --background: 0 0% 100%;
+    --foreground: 220 13% 18%;
+
+    /* Card System */
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 18%;
+
+    /* Popover System */
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 18%;
+
+    /* Primary Brand Colors - Konecta Purple */
+    --primary: 252 100% 39%;
+    --primary-foreground: 0 0% 98%;
+    --primary-hover: 252 100% 45%;
+    --primary-muted: 252 100% 95%;
+
+    /* Secondary Colors */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 13% 18%;
+    --secondary-hover: 220 14% 91%;
+
+    /* Muted Colors */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8.9% 46.1%;
+
+    /* Accent Colors */
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 13% 18%;
+
+    /* Success Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --success-muted: 142 76% 95%;
+
+    /* Warning Colors */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    --warning-muted: 38 92% 95%;
+
+    /* Destructive Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --destructive-muted: 0 84% 95%;
+
+    /* Border & Input */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 60%;
+
+    /* Radius */
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(252 100% 39%), hsl(252 100% 50%));
+    --gradient-secondary: linear-gradient(135deg, hsl(220 14% 96%), hsl(220 14% 91%));
+    --gradient-hero: linear-gradient(135deg, hsl(252 100% 39%) 0%, hsl(252 80% 60%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 13% 18% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 13% 18% / 0.1), 0 2px 4px -1px hsl(220 13% 18% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(220 13% 18% / 0.1), 0 4px 6px -2px hsl(220 13% 18% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(220 13% 18% / 0.1), 0 10px 10px -5px hsl(220 13% 18% / 0.04);
+
+    /* Animations */
+    --transition-all: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Core Background & Foreground */
+    --background: 220 13% 9%;
+    --foreground: 220 14% 96%;
+
+    /* Card System */
+    --card: 220 13% 11%;
+    --card-foreground: 220 14% 96%;
+
+    /* Popover System */
+    --popover: 220 13% 11%;
+    --popover-foreground: 220 14% 96%;
+
+    /* Primary Brand Colors - Konecta Purple */
+    --primary: 252 100% 45%;
+    --primary-foreground: 220 13% 9%;
+    --primary-hover: 252 100% 50%;
+    --primary-muted: 252 100% 15%;
+
+    /* Secondary Colors */
+    --secondary: 220 13% 15%;
+    --secondary-foreground: 220 14% 96%;
+    --secondary-hover: 220 13% 20%;
+
+    /* Muted Colors */
+    --muted: 220 13% 15%;
+    --muted-foreground: 220 8.9% 60%;
+
+    /* Accent Colors */
+    --accent: 220 13% 15%;
+    --accent-foreground: 220 14% 96%;
+
+    /* Success Colors */
+    --success: 142 76% 45%;
+    --success-foreground: 220 13% 9%;
+    --success-muted: 142 76% 15%;
+
+    /* Warning Colors */
+    --warning: 38 92% 55%;
+    --warning-foreground: 220 13% 9%;
+    --warning-muted: 38 92% 15%;
+
+    /* Destructive Colors */
+    --destructive: 0 84% 65%;
+    --destructive-foreground: 220 13% 9%;
+    --destructive-muted: 0 84% 15%;
+
+    /* Border & Input */
+    --border: 220 13% 20%;
+    --input: 220 13% 20%;
+    --ring: 217 91% 65%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(252 100% 45%), hsl(252 100% 55%));
+    --gradient-secondary: linear-gradient(135deg, hsl(220 13% 15%), hsl(220 13% 20%));
+    --gradient-hero: linear-gradient(135deg, hsl(252 100% 45%) 0%, hsl(252 80% 65%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(220 13% 11%) 0%, hsl(220 13% 13%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.15);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.2), 0 2px 4px -1px hsl(0 0% 0% / 0.12);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.2), 0 4px 6px -2px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.25), 0 10px 10px -5px hsl(0 0% 0% / 0.1);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground font-medium;
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
+  }
+}
+
+@layer components {
+  /* Hero Components */
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  .card-gradient {
+    background: var(--gradient-card);
+  }
+  
+  /* Custom Animations */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Transport Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33% { transform: translateY(-15px) translateX(10px); }
+  66% { transform: translateY(-5px) translateX(-5px); }
+}
+
+@keyframes truck-drive {
+  0% { transform: translateX(-100px) scale(0.8); }
+  50% { transform: translateX(0px) scale(1); }
+  100% { transform: translateX(100px) scale(0.8); }
+}
+
+@keyframes package-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-20px) rotate(5deg); }
+  50% { transform: translateY(-10px) rotate(-3deg); }
+  75% { transform: translateY(-15px) rotate(2deg); }
+}
+
+@keyframes delivery-circle {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(50px, -30px) rotate(90deg); }
+  50% { transform: translate(80px, 0px) rotate(180deg); }
+  75% { transform: translate(50px, 30px) rotate(270deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-truck-drive {
+  animation: truck-drive 8s linear infinite;
+}
+
+.animate-package-float {
+  animation: package-float 4s ease-in-out infinite;
+}
+
+.animate-delivery-circle {
+  animation: delivery-circle 12s linear infinite;
+}
+
+/* Leaflet Map Styles */
+.leaflet-container {
+  @apply rounded-lg;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply bg-card border border-border rounded-lg shadow-lg;
+}
+
+.leaflet-popup-content {
+  @apply text-foreground;
+}
